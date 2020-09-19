@@ -11,7 +11,6 @@ import java.lang.reflect.Method;
 public class ReflectionTest {
     private static final Logger logger = LoggerFactory.getLogger(ReflectionTest.class);
 
-
     @Test
     public void showClass() {
         Class<Question> clazz = Question.class;
@@ -42,8 +41,43 @@ public class ReflectionTest {
                 logger.debug(type.getName());
             }
         }
+    }
+
+    @Test
+    public void privateFieldAccess() throws Exception {
+        Class<?> clazz = Student.class;
+        Object o = clazz.getConstructor().newInstance();
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getName().equals("name")) {
+                field.setAccessible(true);
+                field.set(o, "SANGCO");
+            }
+
+            if (field.getName().equals("age")) {
+                field.setAccessible(true);
+                field.set(o, 30);
+            }
+        }
+
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (isGetter(method)) {
+                if (int.class.equals(method.getReturnType())) {
+                    logger.debug(String.valueOf((Integer) method.invoke(o)));
+                }
+                if (String.class.equals(method.getReturnType())) {
+                    logger.debug((String) method.invoke(o));
+                }
+            }
+        }
 
     }
 
+    public static boolean isGetter(Method method){
+        if (!method.getName().startsWith("get")) return false;
+        if (method.getParameterTypes().length != 0) return false;
+        if (void.class.equals(method.getReturnType())) return false;
+        return true;
+    }
 
 }

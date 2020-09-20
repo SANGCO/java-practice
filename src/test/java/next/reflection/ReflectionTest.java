@@ -1,5 +1,6 @@
 package next.reflection;
 
+import next.optional.User;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,20 @@ public class ReflectionTest {
                 if (String.class.equals(method.getReturnType())) {
                     logger.debug((String) method.invoke(o));
                 }
+            }
+        }
+
+    }
+
+    @Test
+    public void createUserTest() throws Exception {
+        Class<?> clazz = User.class;
+        Constructor<?> c = clazz.getConstructor(String.class, Integer.class);
+        Object o = c.newInstance("SANGCO", 30);
+
+        for (Constructor constructor : clazz.getDeclaredConstructors()) {
+            if (constructor.getParameters().length > 0) {
+                Object Ob = c.newInstance("SANGCO", 30);
             }
         }
 
